@@ -1,5 +1,6 @@
 package ai.resourcepack.addons.portals.portal;
 
+import ai.resourcepack.addons.portals.platform.Ticks;
 import ai.resourcepack.addons.portals.api.PortalEnd;
 import ai.resourcepack.engine.api.ShaderObject;
 import org.bukkit.Bukkit;
@@ -27,7 +28,7 @@ public final class Portal implements PortalEnd {
     private final double ringRadius;
     private Portal partner;
     private Phase phase = Phase.OPENING;
-    private int phaseStart = Bukkit.getCurrentTick();
+    private int phaseStart = Ticks.now();
     private long phaseGameTime;
 
     Portal(Frame frame, ShaderObject object, double ringRadius) {
@@ -93,7 +94,7 @@ public final class Portal implements PortalEnd {
 
     void phase(Phase phase) {
         this.phase = phase;
-        this.phaseStart = Bukkit.getCurrentTick();
+        this.phaseStart = Ticks.now();
         this.phaseGameTime = frame.world().getGameTime();
         if (object != null && object.isValid()) {
             object.state(stateName());
@@ -112,7 +113,7 @@ public final class Portal implements PortalEnd {
 
     /** Seconds since the phase began. */
     double phaseSeconds() {
-        return (Bukkit.getCurrentTick() - phaseStart) / 20.0;
+        return (Ticks.now() - phaseStart) / 20.0;
     }
 
     /** The radius of the hole now, in blocks: the shader's spOpen times the ring. */

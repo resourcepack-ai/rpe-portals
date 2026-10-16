@@ -38,7 +38,10 @@ public final class ClientAssets {
 
     /** Opens the jar if it is here, and fetches it in the background if allowed and it is not. */
     public void load(Plugin plugin, boolean download, Runnable whenReady) {
-        String version = Bukkit.getMinecraftVersion();
+        // "26.2-R0.1-SNAPSHOT" on Spigot, "26.2.build.134-..." on Paper: the
+        // leading numbers are the game version.
+        java.util.regex.Matcher m = java.util.regex.Pattern.compile("^\\d+(?:\\.\\d+)*").matcher(Bukkit.getBukkitVersion());
+        String version = m.find() ? m.group() : Bukkit.getBukkitVersion();
         File file = new File(plugin.getDataFolder(), "cache/client-" + version + ".jar");
         if (file.isFile() && open(plugin, file)) {
             whenReady.run();

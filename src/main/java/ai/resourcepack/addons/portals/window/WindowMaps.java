@@ -1,5 +1,6 @@
 package ai.resourcepack.addons.portals.window;
 
+import ai.resourcepack.addons.portals.platform.Ticks;
 import ai.resourcepack.addons.portals.portal.Frame;
 import ai.resourcepack.addons.portals.portal.Portal;
 import org.bukkit.Bukkit;
@@ -289,8 +290,8 @@ public final class WindowMaps {
                 w.headerPhase = w.portal.phase();
             }
             // The clouds' clock is re-based each time the viewer's own clock wraps.
-            if (Bukkit.getCurrentTick() % 20 == 0) writeClouds(w);
-            if (!w.horizonBusy && Bukkit.getCurrentTick() - w.horizonAt >= H_REFRESH) readHorizon(w);
+            if (Ticks.now() % 20 == 0) writeClouds(w);
+            if (!w.horizonBusy && Ticks.now() - w.horizonAt >= H_REFRESH) readHorizon(w);
             sample(w, w.next);
             w.next = (w.next + 1) % MAPS;
         }
@@ -707,7 +708,7 @@ public final class WindowMaps {
      */
     private void readHorizon(Window w) {
         w.horizonBusy = true;
-        w.horizonAt = Bukkit.getCurrentTick();
+        w.horizonAt = Ticks.now();
         Frame there = w.portal.partner().frame();
         World world = there.world();
         int floor = (int) Math.floor(there.worldY(0)) + BASE;
@@ -730,7 +731,7 @@ public final class WindowMaps {
         for (Map.Entry<Long, List<int[]>> e : byChunk.entrySet()) {
             int cx = (int) (e.getKey() >> 32);
             int cz = (int) (long) e.getKey();
-            world.getChunkAtAsync(cx, cz, true).whenComplete((chunk, err) -> {
+            ai.resourcepack.addons.portals.platform.Platform.chunkAt(world, cx, cz).whenComplete((chunk, err) -> {
                 if (chunk != null && windows.get(w.portal) == w) {
                     org.bukkit.ChunkSnapshot snap = chunk.getChunkSnapshot(true, false, false);
                     for (int[] col : e.getValue()) {

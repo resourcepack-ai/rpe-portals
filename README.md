@@ -14,10 +14,12 @@ shipped inside the jar; the window is this plugin's own.
 
 ## Requirements
 
-- **Paper 26.2**, with players on **Java Edition 26.2**. The window is drawn by
-  the game's own shaders through a resource pack written for 26.2, and the
-  plugin uses Paper's teleport flags and asynchronous chunk loading.
-- **[RP Engine](https://resourcepack.ai/rp-engine) 0.2.10 or newer.**
+- **Spigot or Paper 26.2**, with players on **Java Edition 26.2**. The window
+  is drawn by the game's own shaders through a resource pack written for 26.2.
+  On Paper a player keeps their speed through a portal in one packet and the far
+  land is read in the background; on Spigot the same is done the plain Bukkit
+  way (`platform/Platform`).
+- **[RP Engine](https://resourcepack.ai/rp-engine) 0.2.11 or newer.**
 
 ## Installing
 
@@ -71,6 +73,7 @@ you stand is worked out in the shader.
 | `window` | Reading the far side into maps, the block textures, and writing the shader |
 | `api` | The public API and its events |
 | `command`, `config` | `/portals` and `config.yml` |
+| `platform`, `text` | What differs between Spigot and Paper, and sending MiniMessage on both |
 
 `src/main/resources/window/` holds the shader templates (`text.vsh`, `text.fsh`,
 `common.glsl`); the plugin fills in this server's map colour table and writes

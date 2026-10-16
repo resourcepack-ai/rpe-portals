@@ -376,7 +376,10 @@ public final class BlockLooks {
         for (int depth = 0; m != null && depth < 16; depth++) {
             if (m.has("textures")) {
                 for (Map.Entry<String, JsonElement> e : m.getAsJsonObject("textures").entrySet()) {
-                    vars.putIfAbsent(e.getKey(), e.getValue().getAsString());
+                    // A texture is a string, or since 1.21.9 an object naming its sprite.
+                    JsonElement t = e.getValue();
+                    if (t.isJsonObject() && t.getAsJsonObject().has("sprite")) t = t.getAsJsonObject().get("sprite");
+                    if (t.isJsonPrimitive()) vars.putIfAbsent(e.getKey(), t.getAsString());
                 }
             }
             if (elements.isEmpty() && m.has("elements")) {

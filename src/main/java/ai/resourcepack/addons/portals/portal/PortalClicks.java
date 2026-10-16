@@ -1,7 +1,7 @@
 package ai.resourcepack.addons.portals.portal;
 
 import ai.resourcepack.addons.portals.window.WindowMaps;
-import net.kyori.adventure.text.minimessage.MiniMessage;
+import ai.resourcepack.addons.portals.text.Text;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -71,6 +71,6 @@ public final class PortalClicks implements Listener {
     }
 
     private void say(Player player, String key) {
-        player.sendMessage(MiniMessage.miniMessage().deserialize(java.util.Objects.requireNonNullElse(messages.getString("messages." + key), key)));
+        Text.send(player, java.util.Objects.requireNonNullElse(messages.getString("messages." + key), key));
     }
 }

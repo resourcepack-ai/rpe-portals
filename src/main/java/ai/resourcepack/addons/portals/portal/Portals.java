@@ -1,5 +1,6 @@
 package ai.resourcepack.addons.portals.portal;
 
+import ai.resourcepack.addons.portals.platform.Ticks;
 import ai.resourcepack.addons.portals.api.PortalOptions;
 import ai.resourcepack.addons.portals.api.PortalPlace;
 import ai.resourcepack.addons.portals.api.event.PortalOpenEvent;
@@ -129,7 +130,7 @@ public final class Portals implements org.bukkit.event.Listener {
         Portal pa = new Portal(here, a.get(), ring);
         Portal pb = new Portal(there, b.get(), ring);
         int lifetime = options.lifetime() < 0 ? settings.lifetimeTicks() : options.lifetime();
-        Pair pair = new Pair(this, options.owner(), pa, pb, size, Bukkit.getCurrentTick(), lifetime,
+        Pair pair = new Pair(this, options.owner(), pa, pb, size, Ticks.now(), lifetime,
                 options.sounds(), options.travel(), options.window());
         pairs.add(pair);
         for (Portal p : pair.both()) hold(p.frame(), true);
@@ -140,7 +141,7 @@ public final class Portals implements org.bukkit.event.Listener {
             pair.shut = true;
             for (Portal p : pair.both()) p.phase(Portal.Phase.CLOSED);
         } else {
-            pair.loopTick = Bukkit.getCurrentTick() + settings.loopFirstTicks();
+            pair.loopTick = Ticks.now() + settings.loopFirstTicks();
             for (Portal p : pair.both()) {
                 p.phase(Portal.Phase.OPENING);
                 sound(pair, p, settings.soundOpen());
@@ -207,7 +208,7 @@ public final class Portals implements org.bukkit.event.Listener {
         Bukkit.getPluginManager().callEvent(event);
         if (event.isCancelled()) return;
         pair.shut = false;
-        pair.loopTick = Bukkit.getCurrentTick() + settings.loopFirstTicks();
+        pair.loopTick = Ticks.now() + settings.loopFirstTicks();
         for (Portal p : pair.both()) {
             p.phase(Portal.Phase.OPENING);
             sound(pair, p, settings.soundOpen());
@@ -330,7 +331,7 @@ public final class Portals implements org.bukkit.event.Listener {
 
     /** The hum and the lifetime: once a tick. */
     public void tick() {
-        int now = Bukkit.getCurrentTick();
+        int now = Ticks.now();
         for (Pair pair : new ArrayList<>(pairs)) {
             if (pair.removed) continue;
             if (now % 20 == 0) {

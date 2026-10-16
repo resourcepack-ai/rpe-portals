@@ -6,7 +6,7 @@ import ai.resourcepack.addons.portals.api.PortalPlace;
 import ai.resourcepack.addons.portals.place.Placer;
 import ai.resourcepack.addons.portals.portal.Pair;
 import ai.resourcepack.addons.portals.portal.PortalClicks;
-import net.kyori.adventure.text.minimessage.MiniMessage;
+import ai.resourcepack.addons.portals.text.Text;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
@@ -221,7 +221,7 @@ public final class PortalsCommand implements TabExecutor {
     }
 
     private static void say(CommandSender sender, String mini) {
-        sender.sendMessage(MiniMessage.miniMessage().deserialize(mini));
+        Text.send(sender, mini);
     }
 
     @Override

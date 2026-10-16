@@ -5,7 +5,8 @@ import ai.resourcepack.addons.portals.portal.Frame;
 import ai.resourcepack.addons.portals.portal.Pair;
 import ai.resourcepack.addons.portals.portal.Portal;
 import ai.resourcepack.addons.portals.portal.Portals;
-import io.papermc.paper.entity.TeleportFlag;
+import ai.resourcepack.addons.portals.platform.Platform;
+import ai.resourcepack.addons.portals.platform.Ticks;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -52,7 +53,7 @@ public final class Crossings implements Listener {
         if (from.getWorld() != to.getWorld()) return;
         if (!may(player)) return;
         Integer last = lastCrossed.get(player.getUniqueId());
-        int now = Bukkit.getCurrentTick();
+        int now = Ticks.now();
         if (last != null && now - last < COOLDOWN_TICKS) return;
         double eye = player.getEyeHeight();
         for (Pair pair : portals.pairs()) {
@@ -94,17 +95,7 @@ public final class Crossings implements Listener {
         Bukkit.getPluginManager().callEvent(event);
         if (event.isCancelled()) return;
         Location target = event.to();
-        if (target.getWorld() == player.getWorld()) {
-            player.teleport(target,
-                    TeleportFlag.Relative.VELOCITY_X,
-                    TeleportFlag.Relative.VELOCITY_Y,
-                    TeleportFlag.Relative.VELOCITY_Z,
-                    TeleportFlag.Relative.VELOCITY_ROTATION);
-        } else {
-            Vector velocity = here.carryDirection(there, player.getVelocity());
-            player.teleport(target);
-            player.setVelocity(velocity);
-        }
+        Platform.carry(player, target, here.carryDirection(there, player.getVelocity()));
     }
 
     public void forget(UUID player) {

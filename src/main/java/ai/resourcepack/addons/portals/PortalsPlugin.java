@@ -1,6 +1,8 @@
 package ai.resourcepack.addons.portals;
 
 import ai.resourcepack.addons.portals.api.PortalsApi;
+import ai.resourcepack.addons.portals.platform.Platform;
+import ai.resourcepack.addons.portals.platform.Ticks;
 import ai.resourcepack.addons.portals.command.PortalsCommand;
 import ai.resourcepack.addons.portals.config.Settings;
 import ai.resourcepack.addons.portals.portal.PortalClicks;
@@ -88,6 +90,8 @@ public final class PortalsPlugin extends JavaPlugin implements Listener {
         Objects.requireNonNull(getCommand("portals")).setExecutor(command);
         Objects.requireNonNull(getCommand("portals")).setTabCompleter(command);
         getServer().getScheduler().runTaskTimer(this, () -> {
+            Ticks.advance();
+            Platform.tick();
             portals.tick();
             windows.tick();
         }, 1L, 1L);
