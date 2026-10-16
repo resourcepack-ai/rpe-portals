@@ -15,7 +15,7 @@ portal:
 # What you see through a portal is drawn with the game's own block textures.
 # They are not in a server, so the Minecraft client jar for this server's version
 # is downloaded from Mojang once, into plugins/RPEPortals/cache/, as map
-# plugins like BlueMap do. Set false to draw every block in its map colour instead.
+# renderers do. Set false to draw every block in its map colour instead.
 textures:
   download: true
 

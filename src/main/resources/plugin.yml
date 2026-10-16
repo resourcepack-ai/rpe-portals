@@ -83,5 +83,5 @@ permissions:
     description: /portals reload - re-read config.yml.
     default: op
   portals.debug:
-    description: /portals debug and dump - what every window holds.
+    description: /portals debug - what every window holds.
     default: op

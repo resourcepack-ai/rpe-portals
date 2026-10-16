@@ -897,33 +897,10 @@ public final class WindowMaps {
                 b.append(" ").append(w.maps.get(k).getId()).append("v").append(w.layers.get(k).version);
             }
             out.add(b.toString());
-            Map<Integer, Integer> bases = new java.util.TreeMap<>();
-            for (int i = 0; i < w.tops.length; i++) {
-                if (w.heights[i] == colours.symbol(199)) continue;
-                bases.merge((w.tops[i] & 255) >> 2, 1, Integer::sum);
-            }
-            out.add("  horizon colours (base id=count): " + bases);
         }
         return out;
     }
 
-    /** For /portals dump: every map's raw pixels, written beside the config. */
-    public int dump() {
-        int n = 0;
-        File dir = new File(plugin.getDataFolder(), "dump");
-        dir.mkdirs();
-        for (Window w : windows.values()) {
-            for (int k = 0; k < w.maps.size(); k++) {
-                try {
-                    java.nio.file.Files.write(new File(dir, "map" + w.maps.get(k).getId() + ".bin").toPath(), w.layers.get(k).pixels);
-                    n++;
-                } catch (IOException e) {
-                    plugin.getLogger().warning("dump: " + e.getMessage());
-                }
-            }
-        }
-        return n;
-    }
 
     /** Frames left over from a server that stopped without closing its portals. */
     public void sweep() {

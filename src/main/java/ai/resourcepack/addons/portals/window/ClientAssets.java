@@ -26,8 +26,8 @@ import java.util.zip.ZipFile;
  *
  * <p>A server jar has none of them, so the client jar for the server's version
  * is downloaded from Mojang once, into this plugin's folder, the way map
- * renderers like BlueMap do it: they are Mojang's files, fetched from Mojang,
- * and never shipped in this plugin. {@code textures.download: false} turns that
+ * renderers do it: they are Mojang's files, fetched from Mojang, and never
+ * shipped in this plugin. {@code textures.download: false} turns that
  * off, and the windows then draw each block in its map colour.
  */
 public final class ClientAssets {

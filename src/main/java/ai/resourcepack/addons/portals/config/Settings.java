@@ -6,8 +6,6 @@ import org.bukkit.configuration.file.FileConfiguration;
 public record Settings(
         String object,
         double size,
-        double lift,
-        double ringRadius,
         double distance,
         int lifetimeTicks,
         int pairsPerPlayer,
@@ -23,10 +21,6 @@ public record Settings(
         return new Settings(
                 c.getString("portal.object", "portals:portal"),
                 size,
-                // The ring stands just over the ground: its code keeps its
-                // sparks above 0.89 of the radius below the middle.
-                c.getDouble("portal.lift", size / 2 * 0.89),
-                c.getDouble("portal.ring-radius", size / 2 * 0.8),
                 c.getDouble("portal.distance", 3.5),
                 (int) Math.round(c.getDouble("portal.lifetime", 0) * 20),
                 Math.max(1, c.getInt("portal.pairs-per-player", 1)),

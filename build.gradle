@@ -11,10 +11,9 @@ java {
     }
 }
 
-// Paper 1.21.11 and newer: walking through a portal is a teleport that keeps
-// your speed and turns it with you (Paper's relative velocity flags), and the
-// window is the far side's blocks sent to each player alone
-// (sendMultiBlockChange). Neither is in the Spigot API.
+// Paper 26.2: walking through a portal is a teleport that keeps your speed and
+// turns it with you (Paper's relative velocity flags), and the far side is read
+// with Paper's asynchronous chunk loading. Neither is in the Spigot API.
 tasks.withType(JavaCompile).configureEach {
     options.release = 21
     options.encoding = 'UTF-8'
@@ -26,16 +25,82 @@ repositories {
     maven { url = 'https://repo.papermc.io/repository/maven-public/' }
 }
 
-// RP Engine's jar, built beside this project, as every addon here compiles.
-// compileOnly: the server has the engine, and it is what draws the portal.
-def engineJar = System.getenv('ENGINE_JAR')
-        ? files(System.getenv('ENGINE_JAR'))
-        : fileTree(dir: '../../rp-engine/build/libs', include: 'rp-engine-*.jar', exclude: '*-sources.jar')
+// RP Engine, compileOnly: it is a plugin the server already has, and it is
+// what draws the ring. The jar to compile against is the first of:
+//   1. ENGINE_JAR, the path to any RP Engine jar;
+//   2. an engine built beside this project, in ../../rp-engine/build/libs
+//      (-PengineDir=<dir> looks somewhere else): the newest version there, as
+//      every build leaves its jar behind and two engines on one classpath
+//      would be whichever the file system listed first;
+//   3. the released RP Engine this addon needs, downloaded once from
+//      cdn.resourcepack.ai into .gradle/rp-engine/ and checked against its SHA-256.
+// The released one is ENGINE_VERSION, the oldest engine the plugin runs on:
+// compiling against it keeps a newer call out.
+def ENGINE_VERSION = '0.2.10'
+def ENGINE_SHA256 = '548072c33fccaaf7fd26213e280c942f0908595484a5daaa411aaf4588dae1af'
+def ENGINE_URL = "https://cdn.resourcepack.ai/RPEngine-${ENGINE_VERSION}.jar"
+
+def engineEnv = System.getenv('ENGINE_JAR')
+def engineDir = file(findProperty('engineDir') ?: '../../rp-engine/build/libs')
+// rp-engine-<version>.jar -> [major, minor, patch...]; null for anything else (-sources and the like).
+def engineVersion = { File f ->
+    def m = f.name =~ /^rp-engine-(\d+(?:\.\d+)*)\.jar$/
+    m.matches() ? m.group(1).tokenize('.').collect { it as int } : null
+}
+def newerFirst = { File a, File b ->
+    def x = engineVersion(a)
+    def y = engineVersion(b)
+    for (int i = 0; i < Math.max(x.size(), y.size()); i++) {
+        int c = (i < x.size() ? x[i] : 0) <=> (i < y.size() ? y[i] : 0)
+        if (c != 0) return -c
+    }
+    return 0
+}
+def engineBuilt = ((engineDir.listFiles() ?: []) as List<File>).findAll { engineVersion(it) != null }.sort(newerFirst).take(1)
+def engineDownloaded = file(".gradle/rp-engine/RPEngine-${ENGINE_VERSION}.jar")
+
+def downloadEngine = tasks.register('downloadEngine') {
+    description = "Downloads RP Engine ${ENGINE_VERSION} to compile against."
+    outputs.file(engineDownloaded)
+    onlyIf { !engineDownloaded.isFile() }
+    doLast {
+        if (gradle.startParameter.offline) {
+            throw new GradleException("RP Engine ${ENGINE_VERSION} is not downloaded yet and Gradle is offline. " +
+                    "Run once online, or set ENGINE_JAR to an RP Engine jar.")
+        }
+        def part = file("${engineDownloaded}.part")
+        part.parentFile.mkdirs()
+        logger.lifecycle("Downloading ${ENGINE_URL}")
+        URI.create(ENGINE_URL).toURL().withInputStream { input -> part.withOutputStream { it << input } }
+        def sha = java.security.MessageDigest.getInstance('SHA-256').digest(part.bytes).encodeHex().toString()
+        if (sha != ENGINE_SHA256) {
+            part.delete()
+            throw new GradleException("${ENGINE_URL} has SHA-256 ${sha}, expected ${ENGINE_SHA256}. Not using it.")
+        }
+        java.nio.file.Files.move(part.toPath(), engineDownloaded.toPath(),
+                java.nio.file.StandardCopyOption.REPLACE_EXISTING)
+    }
+}
+
+def engineJar = engineEnv
+        ? files(engineEnv)
+        : !engineBuilt.isEmpty()
+            ? files(engineBuilt)
+            : files(engineDownloaded).builtBy(downloadEngine)
 
 dependencies {
     compileOnly 'io.papermc.paper:paper-api:1.21.11-R0.1-SNAPSHOT'
     compileOnly engineJar
 }
+
+tasks.register('checkEngineJar') {
+    doFirst {
+        if (engineEnv && !file(engineEnv).isFile()) {
+            throw new GradleException("ENGINE_JAR is ${engineEnv}, and there is no file there.")
+        }
+    }
+}
+compileJava.dependsOn 'checkEngineJar'
 
 processResources {
     inputs.property('version', project.version)

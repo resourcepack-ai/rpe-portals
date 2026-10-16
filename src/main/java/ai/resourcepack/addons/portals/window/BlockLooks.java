@@ -139,7 +139,10 @@ public final class BlockLooks {
                     double[] mine = vanillaOffset((int) s[0], (int) s[1], code);
                     if (Math.abs(mine[0] - s[2]) > 1e-3 || Math.abs(mine[1] - s[3]) > 1e-3 || Math.abs(mine[2] - s[4]) > 1e-3) wrong++;
                 }
-                org.bukkit.Bukkit.getLogger().info("[Portals] Plant offsets checked against the server's: " + (48 - wrong) + "/48 agree.");
+                if (wrong > 0) {
+                    org.bukkit.Bukkit.getLogger().warning("[Portals] This server nudges plants differently from the window ("
+                            + wrong + " of 48 checked); plants seen through a portal may sit a little off.");
+                }
             }
             return code;
         } catch (Throwable t) {

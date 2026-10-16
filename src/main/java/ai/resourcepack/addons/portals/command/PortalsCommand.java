@@ -54,7 +54,7 @@ public final class PortalsCommand implements TabExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         String verb = args.length == 0 ? "" : args[0].toLowerCase(Locale.ROOT);
-        String node = VERBS.get(verb.equals("dump") ? "debug" : verb);
+        String node = VERBS.get(verb);
         if (node == null) {
             help(sender, label);
             return true;
@@ -126,7 +126,6 @@ public final class PortalsCommand implements TabExecutor {
             case "debug" -> {
                 for (String line : plugin.windows().describe()) sender.sendMessage(line);
             }
-            case "dump" -> sender.sendMessage("dumped " + plugin.windows().dump() + " maps");
             default -> help(sender, label);
         }
         return true;
