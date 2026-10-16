@@ -1,0 +1,87 @@
+name: RPEPortals
+main: ai.resourcepack.addons.portals.PortalsPlugin
+version: ${version}
+api-version: '1.21'
+description: Rings of sparks that open onto somewhere else - see through them, walk through them.
+author: ResourcePack AI
+# Hard: the ring is a 3D shader object RP Engine draws.
+depend: [RPEngine]
+
+commands:
+  portals:
+    description: Portals - mark where your portals lead, place, open, shut and remove them.
+    usage: /<command> [mark|place|toggle|remove|list|open|closeall|reload|debug]
+    aliases: [portal]
+
+# One node per command, and one per option that reaches past your own portals.
+# portals.player and portals.admin are parents; nothing checks them.
+permissions:
+  portals.player:
+    description: Everything a player needs to make and use their own portals.
+    default: true
+    children:
+      portals.mark: true
+      portals.place: true
+      portals.place.otherworld: true
+      portals.toggle: true
+      portals.remove: true
+      portals.list: true
+      portals.travel: true
+  portals.admin:
+    description: Every node. A parent; nothing checks it.
+    default: op
+    children:
+      portals.player: true
+      portals.place.size: true
+      portals.place.unlimited: true
+      portals.toggle.others: true
+      portals.remove.others: true
+      portals.open: true
+      portals.closeall: true
+      portals.reload: true
+      portals.debug: true
+  portals.mark:
+    description: /portals mark - make where you stand the place your portals lead.
+    default: true
+  portals.place:
+    description: /portals place - open a pair in front of you, leading to your mark.
+    default: true
+  portals.place.size:
+    description: /portals place <size> - choose how big the ring is.
+    default: op
+  portals.place.unlimited:
+    description: Have more pairs open at once than pairs-per-player.
+    default: op
+  portals.place.otherworld:
+    description: Place a pair leading to a mark in another world.
+    default: true
+  portals.toggle:
+    description: Open or shut your own portals, by right-click or /portals toggle.
+    default: true
+  portals.toggle.others:
+    description: Open or shut anybody's portals.
+    default: op
+  portals.remove:
+    description: Take away your own portals, by sneak-right-click or /portals remove [all].
+    default: true
+  portals.remove.others:
+    description: Take away anybody's portals.
+    default: op
+  portals.list:
+    description: /portals list - your open pairs and where they lead.
+    default: true
+  portals.travel:
+    description: Walk through a portal.
+    default: true
+  portals.open:
+    description: /portals open <world> <x y z yaw> <x y z yaw> [size] - open a pair at set places.
+    default: op
+  portals.closeall:
+    description: /portals closeall - take away every portal.
+    default: op
+  portals.reload:
+    description: /portals reload - re-read config.yml.
+    default: op
+  portals.debug:
+    description: /portals debug and dump - what every window holds.
+    default: op

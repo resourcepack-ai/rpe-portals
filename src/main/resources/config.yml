@@ -1,0 +1,60 @@
+# Portals
+
+portal:
+  # The 3D shader object that draws a portal (an RP Engine object id).
+  object: portals:portal
+  # Diameter in blocks. The hole is 80% of it.
+  size: 5.8
+  # How far in front of you a portal opens, in blocks.
+  distance: 3.5
+  # Seconds a pair stays open before it closes itself. 0 keeps it open until it is closed.
+  lifetime: 0
+  # How many pairs one player can have open at once. Opening another closes the oldest.
+  pairs-per-player: 1
+
+# What you see through a portal is drawn with the game's own block textures.
+# They are not in a server, so the Minecraft client jar for this server's version
+# is downloaded from Mojang once, into plugins/RPEPortals/cache/, as map
+# plugins like BlueMap do. Set false to draw every block in its map colour instead.
+textures:
+  download: true
+
+sounds:
+  open: portals:portal_open
+  loop: portals:portal_loop
+  close: portals:portal_close
+  volume: 1.5
+  # Ticks after opening before the hum starts, and between hums.
+  loop-first: 57
+  loop-every: 120
+
+# MiniMessage. {label} is the command as typed.
+messages:
+  marked: "<gold>✦</gold> <gray>Your portals will lead <white>here</white>, facing the way you are facing."
+  no-destination: "<gold>✦</gold> <gray>Mark where your portals lead first: stand there and run <white>/{label} mark</white>."
+  other-world: "<gold>✦</gold> <gray>Your mark is in another world, and you may not place a portal leading there."
+  too-close: "<gold>✦</gold> <gray>That is too close to where your portals lead. Go further away."
+  bad-size: "<gold>✦</gold> <gray>A ring is {min} to {max} blocks across."
+  none-near: "<gold>✦</gold> <gray>There is no portal near you."
+  removed: "<gold>✦</gold> <gray>Took the portal away."
+  removed-all: "<gold>✦</gold> <gray>Took away {count} of your portal pairs."
+  list-empty: "<gold>✦</gold> <gray>You have no portals open."
+  list-header: "<gold>✦</gold> <gray>Your portals ({count}):"
+  list-line: "  <white>{here}</white> <gray>→</gray> <white>{there}</white> <gray>({state})"
+  state-open: "open"
+  state-shut: "shut"
+  not-loaded: "<red>The portal could not be drawn. Is the Portals content loaded (/rp reload)?"
+  no-permission: "<red>You do not have permission to do that."
+  players-only: "<red>Only a player can do that."
+  closed-all: "<gold>✦</gold> <gray>Took away {count} portal pairs."
+  reloaded: "<gold>✦</gold> <gray>Reloaded the config."
+  help-header: "<gold>Portals</gold>"
+  help-mark: "  <white>/{label} mark</white> <gray>- your portals lead here"
+  help-place: "  <white>/{label} place</white> <gray>- open a pair in front of you"
+  help-toggle: "  <white>/{label} toggle</white> <gray>- open or shut the portal you are looking at"
+  help-remove: "  <white>/{label} remove [all]</white> <gray>- take that portal away, or all of yours"
+  help-list: "  <white>/{label} list</white> <gray>- your portals"
+  help-open: "  <white>/{label} open <world> <x y z yaw> <x y z yaw> [size]</white> <gray>- a pair at set places"
+  help-closeall: "  <white>/{label} closeall</white> <gray>- take away every portal"
+  help-reload: "  <white>/{label} reload</white> <gray>- re-read the config"
+  help-debug: "  <white>/{label} debug</white> <gray>- what every window holds"

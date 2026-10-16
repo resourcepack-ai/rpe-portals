@@ -1,0 +1,13 @@
+portal_open:
+  file: portal_open
+  category: master
+  subtitle: "A portal sparks open"
+portal_loop:
+  file: portal_loop
+  category: master
+  subtitle: "A portal crackles"
+  length: 6.5
+portal_close:
+  file: portal_close
+  category: master
+  subtitle: "A portal pinches shut"

@@ -1,0 +1,6 @@
+# The portal ring: a 3D shader object whose code is in resourcepack/.
+# Its middle is see-through; the plugin sends each player the far side.
+portal:
+  model: portals:portal
+  size: 6.4
+  states: [closed, opening, open, closing]

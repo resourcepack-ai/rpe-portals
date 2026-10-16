@@ -1,0 +1,50 @@
+plugins {
+    id 'java'
+}
+
+group = 'ai.resourcepack.addons'
+version = '0.1.0'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+// Paper 1.21.11 and newer: walking through a portal is a teleport that keeps
+// your speed and turns it with you (Paper's relative velocity flags), and the
+// window is the far side's blocks sent to each player alone
+// (sendMultiBlockChange). Neither is in the Spigot API.
+tasks.withType(JavaCompile).configureEach {
+    options.release = 21
+    options.encoding = 'UTF-8'
+    options.compilerArgs += ['-Xlint:deprecation']
+}
+
+repositories {
+    mavenCentral()
+    maven { url = 'https://repo.papermc.io/repository/maven-public/' }
+}
+
+// RP Engine's jar, built beside this project, as every addon here compiles.
+// compileOnly: the server has the engine, and it is what draws the portal.
+def engineJar = System.getenv('ENGINE_JAR')
+        ? files(System.getenv('ENGINE_JAR'))
+        : fileTree(dir: '../../rp-engine/build/libs', include: 'rp-engine-*.jar', exclude: '*-sources.jar')
+
+dependencies {
+    compileOnly 'io.papermc.paper:paper-api:1.21.11-R0.1-SNAPSHOT'
+    compileOnly engineJar
+}
+
+processResources {
+    inputs.property('version', project.version)
+    filesMatching('plugin.yml') {
+        expand(version: project.version)
+    }
+}
+
+// RPE-portals-<version>.jar.
+jar {
+    archiveBaseName.set('RPE-portals')
+}

@@ -1,0 +1,15 @@
+{
+  "pack": {
+    "description": "Portals"
+  },
+  "overlays": {
+    "entries": [
+      {
+        "formats": { "min_inclusive": 88, "max_inclusive": 88 },
+        "min_format": 88,
+        "max_format": 88,
+        "directory": "portals_v88"
+      }
+    ]
+  }
+}
