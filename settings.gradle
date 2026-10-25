@@ -3,3 +3,9 @@ plugins {
 }
 
 rootProject.name = 'portals'
+
+// ai.resourcepack:common, the small library our plugins shade in, built from
+// source when it is in this checkout rather than fetched from repo.resourcepack.ai.
+if (file('../../plugin-common').isDirectory()) {
+    includeBuild('../../plugin-common')
+}

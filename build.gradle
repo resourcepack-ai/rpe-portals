@@ -4,7 +4,7 @@ plugins {
 }
 
 group = 'ai.resourcepack.addons'
-version = '0.1.1'
+version = '0.1.2'
 
 java {
     toolchain {
@@ -25,6 +25,19 @@ tasks.withType(JavaCompile).configureEach {
 repositories {
     mavenCentral()
     maven { url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
+    // ai.resourcepack:common, our own shared plugin library. Exclusive: the
+    // ai.resourcepack group is looked for here and nowhere else, so a
+    // look-alike published to Central or any repository above cannot stand in
+    // for it. (A checkout with ../plugin-common builds it from source instead;
+    // see settings.gradle.)
+    exclusiveContent {
+        forRepository {
+            maven { url = 'https://repo.resourcepack.ai' }
+        }
+        filter {
+            includeGroup 'ai.resourcepack'
+        }
+    }
 }
 
 // RP Engine, compileOnly: it is a plugin the server already has, and it is
@@ -94,6 +107,10 @@ dependencies {
     compileOnly 'org.spigotmc:spigot-api:1.21.4-R0.1-SNAPSHOT'
     compileOnly engineJar
 
+    // The small library every ResourcePack AI plugin shades in (the startup
+    // banner, for one), relocated below so it never meets the engine's copy.
+    implementation 'ai.resourcepack:common:0.5.0'
+
     // Every message is MiniMessage (config.yml). Paper has Adventure built in
     // and Spigot does not, so the plugin carries its own, relocated below so it
     // never meets Paper's. Gson is the server's on both.
@@ -124,6 +141,7 @@ shadowJar {
     archiveBaseName.set('RPE-portals')
     archiveClassifier.set('')
     relocate 'net.kyori', 'ai.resourcepack.addons.portals.libs.kyori'
+    relocate 'ai.resourcepack.common', 'ai.resourcepack.addons.portals.libs.common'
     dependencies {
         exclude(dependency('org.jetbrains:annotations'))
         exclude(dependency('org.jspecify:jspecify'))

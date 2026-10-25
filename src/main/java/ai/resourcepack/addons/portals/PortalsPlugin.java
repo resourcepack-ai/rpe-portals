@@ -46,6 +46,11 @@ public final class PortalsPlugin extends JavaPlugin implements Listener {
 
     @Override
     public void onEnable() {
+        ai.resourcepack.common.banner.StartupBanner banner = ai.resourcepack.common.banner.StartupBanner.begin(this)
+                .name("Portals")
+                .addonOf("RP Engine")
+                .tagline("Portals you can see and walk through.")
+                .docs("https://resourcepack.ai/docs/rp-engine/portals");
         saveDefaultConfig();
         settings = Settings.read(getConfig());
         RPEnginePlugin engine = (RPEnginePlugin) Objects.requireNonNull(getServer().getPluginManager().getPlugin("RPEngine"));
@@ -96,6 +101,8 @@ public final class PortalsPlugin extends JavaPlugin implements Listener {
             windows.tick();
         }, 1L, 1L);
         getServer().getServicesManager().register(PortalsApi.class, new PortalsService(this), this, ServicePriority.Normal);
+        banner.ok("Commands", "/portals mark, then /portals place");
+        banner.print();
     }
 
     @Override
