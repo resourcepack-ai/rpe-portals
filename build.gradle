@@ -109,7 +109,7 @@ dependencies {
 
     // The small library every ResourcePack AI plugin shades in (the startup
     // banner, for one), relocated below so it never meets the engine's copy.
-    implementation 'ai.resourcepack:common:0.6.0'
+    implementation 'ai.resourcepack:common:0.7.0'
 
     // Every message is MiniMessage (config.yml). Paper has Adventure built in
     // and Spigot does not, so the plugin carries its own, relocated below so it

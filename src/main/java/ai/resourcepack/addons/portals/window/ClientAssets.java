@@ -6,7 +6,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 
 import javax.imageio.ImageIO;
-import javax.imageio.stream.MemoryCacheImageInputStream;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -125,7 +124,7 @@ public final class ClientAssets {
         ZipEntry e = z.getEntry("assets/minecraft/" + path);
         if (e == null) return Optional.empty();
         try (InputStream in = z.getInputStream(e)) {
-            return Optional.ofNullable(ImageIO.read(new MemoryCacheImageInputStream(in)));
+            return Optional.ofNullable(ImageIO.read(in));
         } catch (IOException ex) {
             return Optional.empty();
         }
